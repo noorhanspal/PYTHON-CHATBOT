@@ -1,33 +1,48 @@
-# 🌸 Python AI Chatbot
+# 🤖 Python AI Chatbot
 
-Streaming AI chatbot built with:
-
-- OpenAI API
-- Gradio UI
-- Whisper (Speech-to-Text)
-- Text-to-Speech
-- Model selection support
+A streaming AI chatbot built with OpenAI API and Gradio UI.
 
 ## Features
 
 - Real-time streaming responses
-- Voice input
-- Voice output
+- Voice input (Speech-to-Text)
+- Voice output (Text-to-Speech)
+- Auto Python code execution
+- Dangerous code execution blocked
+- Token and cost tracking (INR)
+- Multiple voice selection
+- Chat history saved locally
 - Multiple model selection
-- Clean pink UI theme
 
 ## Setup
 
-1. Clone repo
-2. Create virtual environment
+1. Clone the repo
+2. Create a virtual environment
 3. Install requirements
+```
+   pip install -r requirements.txt
+```
+4. Copy `.env.example` to `.env` and add your API key
+```
+   OPENAI_API_KEY=your_key_here
+```
+5. Run the app
+```
+   python app.py
+```
 
-pip install -r requirements.txt
+## Important
 
-4. Add your API key in .env
+- Never share your `.env` file
+- `chat_history.json` is saved locally on your machine
+- Dangerous code is automatically blocked before execution
 
-OPENAI_API_KEY=your_key_here
+## Models Supported
 
-5. Run
+- gpt-4o-mini
+- gpt-4o
+- gpt-4.1-mini
 
-python app.py
+## Voices Supported
+
+- alloy, echo, fable, onyx, nova, shimmer

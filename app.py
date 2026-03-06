@@ -90,6 +90,8 @@ def handle_input(text, audio, history, model, voice):
 
     save_history(history)
     yield history, history, audio_file
+    if audio_file:
+        cleanup_audio(audio_file)
 
 
 pink_theme = gr.themes.Soft(
@@ -150,8 +152,12 @@ with gr.Blocks() as demo:
         outputs=[chatbot, state, audio_output]
     ).then(lambda: "", None, txt)
 
+    def clear_chat():
+        save_history([])
+        return [], [], None
+
     clear_btn.click(
-        lambda: ([], [], None),
+        clear_chat,
         None,
         [chatbot, state, audio_output]
     )
