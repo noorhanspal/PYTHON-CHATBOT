@@ -1,10 +1,4 @@
-import os
-from openai import OpenAI
-from dotenv import load_dotenv
-
-load_dotenv(override=True)
-
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+from utils.openai_client import client
 
 def chat_stream(user_input, history, model):
 
@@ -35,6 +29,8 @@ Rules:
     response = ""
 
     for chunk in stream:
-        if chunk.choices[0].delta.content:
-            response += chunk.choices[0].delta.content
+        delta = chunk.choices[0].delta
+
+        if delta and delta.content:
+            response += delta.content
             yield response

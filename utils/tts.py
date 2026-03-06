@@ -1,11 +1,12 @@
-import os
+#import os
 import tempfile
-from openai import OpenAI
-from dotenv import load_dotenv
+#from openai import OpenAI
+#from dotenv import load_dotenv
+from utils.openai_client import client
 
-load_dotenv(override=True)
+# load_dotenv(override=True)
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def text_to_speech(text):
 
