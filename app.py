@@ -1,9 +1,23 @@
 import re
+import json
 from utils.openai_client import client
 import gradio as gr
 from utils.chat import chat_stream
 from utils.tools import run_python_code, extract_python_code
 from utils.tts import text_to_speech, cleanup_audio
+
+
+def save_history(history):
+    with open("chat_history.json", "w") as f:
+        json.dump(history, f)
+
+
+def load_history():
+    try:
+        with open("chat_history.json", "r") as f:
+            return json.load(f)
+    except:
+        return []
 
 
 def clean_for_tts(text):
@@ -42,12 +56,12 @@ def handle_input(text, audio, history, model, voice):
         for chunk in chat_stream(text, history, model):
             bot_response = chunk
 
-        if len(history) > 0 and history[-1]["role"] == "assistant":
-            history[-1]["content"] = bot_response
-        else:
-            history.append({"role": "assistant", "content": bot_response})
+            if len(history) > 0 and history[-1]["role"] == "assistant":
+                history[-1]["content"] = bot_response
+            else:
+                history.append({"role": "assistant", "content": bot_response})
 
-        yield history, history, None
+            yield history, history, None
 
     except Exception as e:
         history.append({"role": "assistant", "content": f"❌ Error: {str(e)}"})
@@ -74,6 +88,7 @@ def handle_input(text, audio, history, model, voice):
         print(f"TTS Error: {e}")
         audio_file = None
 
+    save_history(history)
     yield history, history, audio_file
 
 
@@ -100,7 +115,7 @@ with gr.Blocks() as demo:
     )
 
     chatbot = gr.Chatbot()
-    state = gr.State([])
+    state = gr.State(load_history())
 
     with gr.Row():
 
@@ -125,13 +140,13 @@ with gr.Blocks() as demo:
 
     send_btn.click(
         handle_input,
-        inputs=[txt, audio_input, state, model_dropdown, voice_dropdown],  # ✅
+        inputs=[txt, audio_input, state, model_dropdown, voice_dropdown],
         outputs=[chatbot, state, audio_output]
     ).then(lambda: "", None, txt)
 
     txt.submit(
         handle_input,
-        inputs=[txt, audio_input, state, model_dropdown, voice_dropdown],  # ✅
+        inputs=[txt, audio_input, state, model_dropdown, voice_dropdown],
         outputs=[chatbot, state, audio_output]
     ).then(lambda: "", None, txt)
 
