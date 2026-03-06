@@ -90,6 +90,7 @@ def handle_input(text, audio, history, model, voice):
 
     save_history(history)
     yield history, history, audio_file
+
     if audio_file:
         cleanup_audio(audio_file)
 
@@ -140,17 +141,19 @@ with gr.Blocks() as demo:
         autoplay=True
     )
 
+    # send button
     send_btn.click(
         handle_input,
         inputs=[txt, audio_input, state, model_dropdown, voice_dropdown],
         outputs=[chatbot, state, audio_output]
-    ).then(lambda: "", None, txt)
+    ).then(lambda: (None, ""), None, [audio_input, txt])
 
+    # enter submit
     txt.submit(
         handle_input,
         inputs=[txt, audio_input, state, model_dropdown, voice_dropdown],
         outputs=[chatbot, state, audio_output]
-    ).then(lambda: "", None, txt)
+    ).then(lambda: (None, ""), None, [audio_input, txt])
 
     def clear_chat():
         save_history([])
